@@ -40,7 +40,7 @@ export default function Home() {
               variant="secondary"
             >
               Dashboard
-              <ChevronRight className="w-4 h-4 ml-2" />
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </SignedIn>
         </div>
@@ -68,11 +68,13 @@ export default function Home() {
               assistant. Code smarter, build faster, and ship with confidence.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 min-[400px]:flex-row justify-center pt-4">
+            <SignedOut>
             <SignUpButton>
               <Button size="lg" className="gap-2 px-8">
                 Get Started <ArrowRight className="w-4 h-4" />
               </Button>
               </SignUpButton>
+              </SignedOut>
               <Button size="lg" variant="outline" className="gap-2 px-8">
                 Live Demo <Brain className="w-4 h-4" />
               </Button>

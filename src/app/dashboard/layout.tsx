@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { NavActions } from "@/components/nav-actions"
-// side?: "left" | "right";
-//     variant?: "sidebar" | "floating" | "inset";
+//     side?: "left" | "right"; // default is left
+//     variant?: "sidebar" | "floating" | "inset"; // default is sidebar
 //     collapsible?: "offcanvas" | "icon" | "none";
 import {
   Breadcrumb,
