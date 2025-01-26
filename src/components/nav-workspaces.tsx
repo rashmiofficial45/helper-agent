@@ -1,10 +1,5 @@
-import { ChevronRight, MoreHorizontal, Plus } from "lucide-react"
+import { MoreHorizontal, Trash2 } from "lucide-react"
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -13,64 +8,38 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "../../convex/_generated/api"
+import { Id } from "../../convex/_generated/dataModel"
 
-export function NavWorkspaces({
-  workspaces,
-}: {
-  workspaces: {
-    name: string
-    emoji: React.ReactNode
-    pages: {
-      name: string
-      emoji: React.ReactNode
-    }[]
-  }[]
-}) {
+export function NavWorkspaces() {
+  const allChat = useQuery(api.chats.chatList)
+    const deleteChat = useMutation(api.chats.deleteChat)
+   const handleDelete = async (id: Id<"chats">) => {
+    const chatId = await deleteChat({ id })
+    console.log(chatId)
+  }
+
+  if (!allChat) {
+    return null
+  }
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
+      <SidebarGroupLabel>Chats</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {workspaces.map((workspace) => (
-            <Collapsible key={workspace.name}>
-              <SidebarMenuItem>
+          {allChat.map((chats) => (
+              <SidebarMenuItem key={chats._id}>
                 <SidebarMenuButton asChild>
                   <a href="#">
-                    <span>{workspace.emoji}</span>
-                    <span>{workspace.name}</span>
+                    <span className="px-1">{chats.title}</span>
                   </a>
                 </SidebarMenuButton>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuAction
-                    className="left-2 bg-sidebar-accent text-sidebar-accent-foreground data-[state=open]:rotate-90"
-                    showOnHover
-                  >
-                    <ChevronRight />
-                  </SidebarMenuAction>
-                </CollapsibleTrigger>
-                <SidebarMenuAction showOnHover>
-                  <Plus />
+                <SidebarMenuAction onClick={() => handleDelete(chats._id)} showOnHover>
+                <Trash2 />
                 </SidebarMenuAction>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {workspace.pages.map((page) => (
-                      <SidebarMenuSubItem key={page.name}>
-                        <SidebarMenuSubButton asChild>
-                          <a href="#">
-                            <span>{page.emoji}</span>
-                            <span>{page.name}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
               </SidebarMenuItem>
-            </Collapsible>
           ))}
           <SidebarMenuItem>
             <SidebarMenuButton className="text-sidebar-foreground/70">
