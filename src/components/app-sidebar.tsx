@@ -21,6 +21,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
+
 // This is sample data.
 const data = {
   navMain: [
@@ -217,7 +218,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // const router = useRouter()
 
   // const chats = useQuery(api.chats.list)
-  // const createChat = useMutation(api.chats.create)
   // const deleteChat = useMutation(api.chats.delete)
   // const updateChat = useMutation(api.chats.update)
 
