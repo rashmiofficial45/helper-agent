@@ -18,7 +18,7 @@ const router = useRouter();
   const handleCreate = async () => {
     const chatId = await createChat({ title: "New Chat" })
     if (chatId) {
-      router.push(`dashboard/chat/${chatId}`)
+      router.push(`/dashboard/chat/${chatId}`)
     }
   }
   return (
