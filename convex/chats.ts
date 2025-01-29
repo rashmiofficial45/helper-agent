@@ -35,8 +35,21 @@ export const deleteChat = mutation({
     if (!user) {
       throw new Error("Not Authenticated");
     }
-    const chat = await ctx.db.delete(args.id);
-    return chat;
+    const chat = await ctx.db.get(args.id);
+    if (!chat) {
+      throw new Error("Chat not found");
+    }
+    if (chat.userId !== user.subject) {
+      throw new Error("Not Authorized");
+    }
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_chat", (q) => q.eq("chatId", args.id))
+      .collect();
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+    await ctx.db.delete(args.id);
   },
 });
 
