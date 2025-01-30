@@ -22,7 +22,6 @@ export function ChatInterface({ chatId, initialChat }: ChatInterfaceProps) {
 
   // Ref for auto-scrolling the chat to the latest message
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   // Effect to scroll to bottom whenever messages or streamed response update
   useEffect(() => {
     scrollToBottom();
@@ -75,10 +74,20 @@ export function ChatInterface({ chatId, initialChat }: ChatInterfaceProps) {
         body: JSON.stringify(requestBody),
       });
 
-      // Handle response (You may need to update this to process streamed responses correctly)
 
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Response data:", data);
+        setStreamedResponse(data.response);
+      }
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+      // Handle response (You may need to update this to process streamed responses correctly)
+      
     } catch (error) {
       console.error("Error sending message:", error);
+      setMessages ((prev)=> prev.filter((message) => message._id !== optimisticMessage._id));
     } finally {
       setIsLoading(false); // Reset loading state
     }
