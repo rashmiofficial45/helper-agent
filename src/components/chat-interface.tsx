@@ -84,10 +84,14 @@ export function ChatInterface({ chatId, initialChat }: ChatInterfaceProps) {
         throw new Error("No response body");
       }
       // Handle response (You may need to update this to process streamed responses correctly)
-      
+
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages ((prev)=> prev.filter((message) => message._id !== optimisticMessage._id));
+      setStreamedResponse(
+        "error"
+        // error goes here
+      )
     } finally {
       setIsLoading(false); // Reset loading state
     }
