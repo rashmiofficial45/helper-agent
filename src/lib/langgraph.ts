@@ -1,16 +1,19 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// import { wxflows } from "wxflows"; // Assuming wxflows is correctly installed
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ToolNode } from "@langchain/langgraph/prebuilt";
+import wxflows from "@wxflows/sdk/langchain";
 // Initialize the tool client
-// const toolClient = new wxflows({
-//   endpoint: process.env.WXFLOWS_ENDPOINT || "",
-//   apikey: process.env.WXFLOWS_APIKEY,
-// });
+
+//feat: add manual tools like comments at https://dummyjson.com/comments
+//Note: need to enable the prompt caching for the google api's while doing the api calls to avoid the rate limit.
+const toolClient = new wxflows({
+  endpoint: process.env.WXFLOWS_ENDPOINT || "",
+  apikey: process.env.WXFLOWS_APIKEY,
+});
 
 // Retrieve the tools
-// const tools = await toolClient.lcTools;
-// const toolNode = new ToolNode(tools);
+const tools = await toolClient.lcTools;
+const toolNode = new ToolNode(tools);
 
 // Initialize the LLM provider with tool support and prompt caching
 const initialiseModel = () => {
