@@ -51,7 +51,7 @@ export interface ToolStartMessage extends BaseStreamMessage {
 export interface ToolEndMessage extends BaseStreamMessage {
   type: StreamMessageType.ToolEnd;
   tool: string;
-  input: unknown;
+  output: unknown;
 }
 
 export type StreamMessage =
