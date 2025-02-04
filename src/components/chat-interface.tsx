@@ -9,6 +9,8 @@ import { ChatRequestBody, StreamMessageType } from "@/lib/types";
 import { createSSEParser } from "@/lib/SSEParcer";
 import { getConvexClient } from "@/lib/convex";
 import { api } from "../../convex/_generated/api";
+import { MessageBubble } from "./message-bubble";
+import WelcomeMessage from "./welcome-message";
 
 // ---------------------------------------------------------------------------
 // ChatInterfaceProps: Component props type definition
@@ -186,7 +188,7 @@ const formatTerminalOutput = (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Goog-Prompt-Cache": "enabled", // Custom header to enable prompt caching
+          // "X-Goog-Prompt-Cache": "enabled", // Custom header to enable prompt caching
         },
         body: JSON.stringify(requestBody),
       });
@@ -272,8 +274,9 @@ const formatTerminalOutput = (
                 _id: `temp_assistant_${Date.now()}`,
                 chatId,
                 content: fullResponse,
-                role: "assistant",
+                role: "bot",
                 createdAt: Date.now(),
+                _creationTime: Date.now(),
               } as Doc<"messages">;
               // Save the assistant message to the database.
               const convex = getConvexClient();
@@ -323,28 +326,38 @@ const formatTerminalOutput = (
   return (
     <main className="flex flex-col h-[calc(100vh-4.5rem)] rounded-md">
       {/* Chat messages display section */}
-      <section className="flex-1 overflow-y-auto p-4">
-        {/* Debug: Display the current chatId */}
-        <div>chatId: {chatId}</div>
+      <section className="flex-1 overflow-y-auto bg-gray-50 p-2 md:p-0">
+        <div className="max-w-4xl mx-auto p-4 space-y-3">
+          {messages?.length === 0 && <WelcomeMessage />}
 
-        {/* Render each stored message */}
-        <div>
-          {messages.map((message) => (
-            <div key={message._id} className="p-2 border rounded-lg">
-              <p>{message.content}</p>
-            </div>
+          {messages?.map((message: Doc<"messages">) => (
+            <MessageBubble
+              key={message._id}
+              content={message.content}
+              isUser={message.role === "user"}
+            />
           ))}
+
+          {streamedResponse && <MessageBubble content={streamedResponse} />}
+
+          {/* Loading indicator */}
+          {isLoading && !streamedResponse && (
+            <div className="flex justify-start animate-in fade-in-0">
+              <div className="rounded-2xl px-4 py-3 bg-white text-gray-900 rounded-bl-none shadow-sm ring-1 ring-inset ring-gray-200">
+                <div className="flex items-center gap-1.5">
+                  {[0.3, 0.15, 0].map((delay, i) => (
+                    <div
+                      key={i}
+                      className="h-1.5 w-1.5 rounded-full bg-gray-400 animate-bounce"
+                      style={{ animationDelay: `-${delay}s` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
-
-        {/* Display streamed response if available */}
-        {streamedResponse && (
-          <div className="p-2 border rounded-lg bg-muted">
-            <p>{streamedResponse}</p>
-          </div>
-        )}
-
-        {/* Auto-scroll anchor */}
-        <div ref={messagesEndRef} />
       </section>
 
       {/* Chat input section */}
