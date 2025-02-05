@@ -264,6 +264,7 @@ const formatTerminalOutput = (
             case StreamMessageType.Error:
               // If an error message is received, throw an error to be caught below.
               if ("error" in message) {
+                console.error(message.error);
                 throw new Error(message.error);
               }
               break;

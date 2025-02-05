@@ -19,8 +19,7 @@ export function NavWorkspaces() {
   const allChat = useQuery(api.chats.chatList)
     const deleteChat = useMutation(api.chats.deleteChat)
    const handleDelete = async (id: Id<"chats">) => {
-    const chatId = await deleteChat({ id })
-    console.log(chatId)
+    await deleteChat({ id })
   }
   const handleChatClick = (id:Id<"chats"> ,e: React.MouseEvent) => {
     e.preventDefault()

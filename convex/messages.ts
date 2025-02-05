@@ -7,10 +7,13 @@ export const messageList = query({
     chatId: v.id("chats"),
   },
   handler: async (ctx, args) => {
-    // const user = await getUser(ctx);
-    // if (!user) {
-    //   throw new Error("Not Authenticated");
-    // }
+    const user = await getUser(ctx);
+    console.log(user);
+       // Add chat ownership check
+       const chat = await ctx.db.get(args.chatId);
+       if (!chat || chat.userId !== user.subject) {
+         throw new Error("Not authorized");
+       }
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
@@ -26,9 +29,11 @@ export const sendMessages = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
-    if (!user) {
-      throw new Error("Not Authenticated");
-    }
+       // Add chat ownership check
+       const chat = await ctx.db.get(args.chatId);
+       if (!chat || chat.userId !== user.subject) {
+         throw new Error("Not authorized");
+       }
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, "\n"),
@@ -47,9 +52,11 @@ export const store = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
-    if (!user) {
-      throw new Error("Not Authenticated");
-    }
+       // Add chat ownership check
+       const chat = await ctx.db.get(args.chatId);
+       if (!chat || chat.userId !== user.subject) {
+         throw new Error("Not authorized");
+       }
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, "\n"),
@@ -60,18 +67,23 @@ export const store = mutation({
     return messageId;
   },
 });
-export const getLastMessage = mutation({
+// Change from mutation to query
+export const getLastMessage = query({
   args: {
     chatId: v.id("chats"),
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
-    if (!user) {
-      throw new Error("Not Authenticated");
+
+    // Add ownership check
+    const chat = await ctx.db.get(args.chatId);
+    if (!chat || chat.userId !== user.subject) {
+      throw new Error("Not authorized");
     }
+
     const lastMessage = await ctx.db
       .query("messages")
-      .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+      .withIndex("by_chat", q => q.eq("chatId", args.chatId))
       .order("desc")
       .first();
 

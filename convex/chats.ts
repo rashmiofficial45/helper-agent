@@ -3,6 +3,7 @@ import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server";
 
 export async function getUser(ctx: QueryCtx | MutationCtx) {
   const identity = await ctx.auth.getUserIdentity();
+  console.log(identity)
   if (!identity) {
     throw new Error("Unauthenticated call to function");
   }
@@ -15,6 +16,8 @@ export const createChat = mutation({
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
+    console.log(user);
+
     if (!user) {
       throw new Error("Not Authenticated");
     }
