@@ -192,13 +192,14 @@ const formatTerminalOutput = (
         },
         body: JSON.stringify(requestBody),
       });
-
+      console.log("Response:", response);
       // If the response returns JSON (non-streamed), update the streamedResponse state.
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Response data:", data);
-        setStreamedResponse(data.response);
-      }
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   console.log("Response data:", data);
+      //   setStreamedResponse(data.response);
+      // }
+
       if (!response.body) {
         throw new Error("No response body");
       }

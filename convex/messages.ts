@@ -9,11 +9,7 @@ export const messageList = query({
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
     console.log(user);
-       // Add chat ownership check
-       const chat = await ctx.db.get(args.chatId);
-       if (!chat || chat.userId !== user.subject) {
-         throw new Error("Not authorized");
-       }
+       //feat: Add chat ownership check (will add later)
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
