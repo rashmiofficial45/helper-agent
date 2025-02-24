@@ -14,12 +14,11 @@ export default function RootLayout({
 }>) {
 
   return (
-    <ConvexClientProvider>
+
       <html lang="en">
         <body>
-          {children}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
         </body>
       </html>
-    </ConvexClientProvider>
   );
 }
