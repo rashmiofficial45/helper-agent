@@ -282,6 +282,7 @@ const formatTerminalOutput = (
               } as Doc<"messages">;
               // Save the assistant message to the database.
               const convex = getConvexClient();
+              // ERROR: Still getting error here; Need to fix this
               await convex.mutation(api.messages.store, {
                 chatId,
                 content: fullResponse,

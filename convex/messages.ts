@@ -24,12 +24,12 @@ export const sendMessages = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
+    // const user = await getUser(ctx);
        // Add chat ownership check
-       const chat = await ctx.db.get(args.chatId);
-       if (!chat || chat.userId !== user.subject) {
-         throw new Error("Not authorized");
-       }
+      //  const chat = await ctx.db.get(args.chatId);
+      //  if (!chat || chat.userId !== user.subject) {
+      //    throw new Error("Not authorized");
+      //  }
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, "\n"),
